@@ -1,11 +1,10 @@
 package com.nest.complaintapp_backend.controller;
 
 import com.nest.complaintapp_backend.model.UserModel;
-import com.nest.complaintapp_backend.model.dao.UserDao;
+import com.nest.complaintapp_backend.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,12 +32,17 @@ public class ComplaintController {
     @PostMapping(path = "/userverify",consumes = "application/json",produces = "application/json")
     public HashMap<String, String> userVerify(@RequestBody UserModel user){
         HashMap<String, String> map = new HashMap<>();
-        int id = user.getId();
         List<UserModel> result = (List<UserModel>) userdao.userVerify(user.getUsername(),user.getPassword());
         if(result.size()>0){
             map.put("status","success");
-            map.put("userId",String.valueOf(user.getId()));
+            map.put("userId",String.valueOf(result.get(0).getId()));
         }
         return map;
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/viewprofile",consumes = "application/json",produces = "application/json")
+    public List<UserModel> viewProfile(@RequestBody UserModel user){
+         return (List<UserModel>) userdao.viewProfile(user.getId());
     }
 }
