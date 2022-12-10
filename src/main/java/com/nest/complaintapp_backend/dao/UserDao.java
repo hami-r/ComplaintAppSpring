@@ -11,6 +11,6 @@ public interface UserDao extends CrudRepository<UserModel,Integer> {
     @Query(value = "SELECT `id`,`address`,`email`,`name`,`password`,`phone_no`,`username` FROM `users` WHERE `username` =:username AND `password` = :password",nativeQuery = true)
     List<UserModel> userVerify(String username,String password);
 
-    @Query(value = "SELECT `id`,`address`,`email`,`name`,`password`,`phone_no`,`username` FROM `users` WHERE `id` = id",nativeQuery = true)
-    List<UserModel> viewProfile(Integer id);
+    @Query(value = "SELECT `id`,`address`,`email`,`name`,`password`,`phone_no`,`username` FROM `users` WHERE `id` = :userId",nativeQuery = true)
+    List<UserModel> viewProfile(String  userId);
 }

@@ -1,48 +1,38 @@
 package com.nest.complaintapp_backend.controller;
 
-import com.nest.complaintapp_backend.model.UserModel;
-import com.nest.complaintapp_backend.dao.UserDao;
+import com.nest.complaintapp_backend.dao.ComplaintDao;
+import com.nest.complaintapp_backend.model.ComplaintModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ComplaintController {
 
     @Autowired
-    private UserDao userdao;
-
-    @GetMapping("/")
-    public String home(){
-        return "Welcome to the complaint api";
-    }
+    private ComplaintDao dao;
 
     @CrossOrigin(origins = "*")
-    @PostMapping(path = "/useradd",consumes = "application/json",produces = "application/json")
-    public HashMap<String, String> userReg(@RequestBody UserModel user){
-        userdao.save(user);
+    @PostMapping(path = "/addcomplaint",consumes = "application/json",produces = "application/json")
+    public HashMap<String, String> addComplaint(@RequestBody ComplaintModel complaint){
+        dao.save(complaint);
         HashMap<String, String> map = new HashMap<>();
         map.put("status","success");
         return map;
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping(path = "/userverify",consumes = "application/json",produces = "application/json")
-    public HashMap<String, String> userVerify(@RequestBody UserModel user){
-        HashMap<String, String> map = new HashMap<>();
-        List<UserModel> result = (List<UserModel>) userdao.userVerify(user.getUsername(),user.getPassword());
-        if(result.size()>0){
-            map.put("status","success");
-            map.put("userId",String.valueOf(result.get(0).getId()));
-        }
-        return map;
+    @GetMapping("/viewall")
+    public List<Map<String,String>> viewAllComplaints(){
+        return (List<Map<String,String>>) dao.viewAllComplaints();
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping(path = "/viewprofile",consumes = "application/json",produces = "application/json")
-    public List<UserModel> viewProfile(@RequestBody UserModel user){
-         return (List<UserModel>) userdao.viewProfile(user.getId());
+    @PostMapping("/viewmycomplaints")
+    public List<ComplaintModel> viewMyComplaints(@RequestBody ComplaintModel c){
+        return (List<ComplaintModel>) dao.viewMyComplaints(c.getId());
     }
 }
